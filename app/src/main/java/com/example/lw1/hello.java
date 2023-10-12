@@ -1,47 +1,65 @@
 package com.example.lw1;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
-public class hello extends Activity{
+import java.util.ArrayList;
+
+public class hello extends AppCompatActivity{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_helloact);
-        Button ClickMe = findViewById(R.id.buttonClickMe);
-        Button ClickMe1 = findViewById(R.id.buttonClickMe1);
-        TextView textView = findViewById(R.id.TextViewHello);
-
-        ClickMe.setOnClickListener(new View.OnClickListener() {
+        EditText mEditText = findViewById(R.id.TextEdit);
+        Button AddButton = findViewById(R.id.AddButton);
+        Button DelButton = findViewById(R.id.DeleteButton);
+        ListView listView = findViewById(R.id.ViewList);
+        ArrayList<String> mArrList = new ArrayList<String>();
+        ArrayList<String> RemList = new ArrayList<String>();
+        ArrayAdapter<String> mTextAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mArrList);
+        listView.setAdapter(mTextAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View view) {
-                ClickMe.setText("CLICKED!!!");
-                String tmps = (String)textView.getText();
-                if (tmps.equals("Hello!")) {
-                    textView.setText("1");
-                } else{
-                   int tmp = Integer.valueOf((String)textView.getText());
-                   tmp++;
-                   textView.setText(String.valueOf(tmp));
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String tmp = mTextAdapter.getItem(i);
+                if (listView.isItemChecked(i)){
+                    view.setBackgroundColor(Color.YELLOW);
+                    RemList.add(tmp);
+                }
+                else {
+                    view.setBackgroundColor(0xFFFFFFF);
+                    RemList.remove(tmp);
                 }
             }
         });
-        ClickMe1.setOnClickListener(new View.OnClickListener() {
+        AddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ClickMe1.setText("CLICKED!!!");
-                String tmps = (String)textView.getText();
-                if (tmps.equals("Hello!")) {
-                    textView.setText("1");
-                } else{
-                    int tmp = Integer.valueOf((String)textView.getText());
-                    tmp++;
-                    textView.setText(String.valueOf(tmp));
+                String tmp = String.valueOf(mEditText.getText());
+                mTextAdapter.add(tmp);
+                mEditText.setText("");
+                mTextAdapter.notifyDataSetChanged();
+            }
+        });
+        DelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                for(int i = 0; i < RemList.size(); i++){
+                    mTextAdapter.remove(RemList.get(i));
                 }
+                RemList.clear();
+                mTextAdapter.notifyDataSetChanged();
             }
         });
     }
