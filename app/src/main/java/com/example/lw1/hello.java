@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +30,11 @@ public class hello extends AppCompatActivity{
         ArrayList<String> RemList = new ArrayList<String>();
         ArrayAdapter<String> mTextAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mArrList);
         listView.setAdapter(mTextAdapter);
+        Bundle arg = getIntent().getExtras();
+        if (arg != null) {
+            String str = arg.get("hello").toString();
+            Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+        }
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

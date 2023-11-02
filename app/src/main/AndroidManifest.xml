@@ -9,16 +9,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LW1" >
 
+    <activity android:name=".registration"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN"/>
+            <category android:name="android.intent.category.LAUNCHER"/>
+        </intent-filter>
+    </activity>
+
         <activity android:name=".hello"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.CALL"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-
         </activity>
-
-
     </application>
 
 
