@@ -1,6 +1,8 @@
 package com.example.lw1;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +20,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 
 public class hello extends AppCompatActivity{
+    ArrayAdapter<String> mTextAdapter;
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -28,13 +33,20 @@ public class hello extends AppCompatActivity{
         ListView listView = findViewById(R.id.ViewList);
         ArrayList<String> mArrList = new ArrayList<String>();
         ArrayList<String> RemList = new ArrayList<String>();
-        ArrayAdapter<String> mTextAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mArrList);
+        mTextAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mArrList);
         listView.setAdapter(mTextAdapter);
         Bundle arg = getIntent().getExtras();
         if (arg != null) {
             String str = arg.get("hello").toString();
             Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
         }
+        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        int i = 0;
+        while (sharedPref.contains("row"+ Integer.toString(i))){
+            mTextAdapter.add(sharedPref.getString("row"+ Integer.toString(i), ""));
+            i++;
+        }
+        mTextAdapter.notifyDataSetChanged();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -68,5 +80,15 @@ public class hello extends AppCompatActivity{
                 mTextAdapter.notifyDataSetChanged();
             }
         });
+    }
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        editor = sharedPref.edit();
+        editor.clear();
+        for (int i = 0; i < mTextAdapter.getCount(); i++){
+            editor.putString("row" + Integer.toString(i), mTextAdapter.getItem(i));
+        }
+        editor.apply();
     }
 }
