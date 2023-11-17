@@ -2,6 +2,7 @@ package com.example.lw1;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -23,6 +24,9 @@ public class hello extends AppCompatActivity{
     ArrayAdapter<String> mTextAdapter;
     SharedPreferences sharedPref;
     SharedPreferences.Editor editor;
+    MyDatabase db = new MyDatabase(this);
+    String loginUser;
+    String passUser;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -30,14 +34,18 @@ public class hello extends AppCompatActivity{
         EditText mEditText = findViewById(R.id.TextEdit);
         Button AddButton = findViewById(R.id.AddButton);
         Button DelButton = findViewById(R.id.DeleteButton);
+        Button DelProfile = findViewById(R.id.DelUserButton);
         ListView listView = findViewById(R.id.ViewList);
         ArrayList<String> mArrList = new ArrayList<String>();
         ArrayList<String> RemList = new ArrayList<String>();
         mTextAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mArrList);
         listView.setAdapter(mTextAdapter);
+
         Bundle arg = getIntent().getExtras();
         if (arg != null) {
             String str = arg.get("hello").toString();
+            loginUser = arg.get("login").toString();
+            passUser = arg.get("pass").toString();
             Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
         }
         sharedPref = this.getPreferences(Context.MODE_PRIVATE);
@@ -78,6 +86,17 @@ public class hello extends AppCompatActivity{
                 }
                 RemList.clear();
                 mTextAdapter.notifyDataSetChanged();
+            }
+        });
+        DelProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (db.deleteUser(new User(loginUser, passUser))){
+                    Toast.makeText(getApplicationContext(), "Профиль удален", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                else
+                    Toast.makeText(getApplicationContext(), "Что-то пошло не так", Toast.LENGTH_SHORT).show();
             }
         });
     }
