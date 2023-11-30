@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -91,12 +92,17 @@ public class hello extends AppCompatActivity{
         DelProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (db.deleteUser(new User(loginUser, passUser))){
-                    Toast.makeText(getApplicationContext(), "Профиль удален", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-                else
-                    Toast.makeText(getApplicationContext(), "Что-то пошло не так", Toast.LENGTH_SHORT).show();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (db.deleteUser(new User(loginUser, passUser))){
+                            Log.v("Delete profile", "SUCCESS");
+                            finish();
+                        }
+                        else
+                            Log.v("Delete profile", "ERROR");
+                    }
+                }).start();
             }
         });
     }

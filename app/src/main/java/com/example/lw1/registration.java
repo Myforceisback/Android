@@ -36,45 +36,66 @@ public class registration extends AppCompatActivity {
         Enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
-                if (db.checkUser(new User(loginText.getText().toString(), passwordText.getText().toString()))){
-                    editor.putString("login", loginText.getText().toString());
-                    editor.putString("password", passwordText.getText().toString());
-                    editor.apply();
-                    openIntent.putExtra("hello", "Hello from FirstActivity");
-                    openIntent.putExtra("login", loginText.getText().toString());
-                    openIntent.putExtra("pass", passwordText.getText().toString());
-                    startActivity(openIntent);
-                }
-                else{
-                    Toast.makeText(getApplicationContext(), "Неверный логин или пароль", Toast.LENGTH_SHORT).show();
-                }
+                String login = loginText.getText().toString();
+                String pass = passwordText.getText().toString();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (db.checkUser(new User(login, pass))){
+                            editor.putString("login", login);
+                            editor.putString("password", pass);
+                            editor.apply();
+                            openIntent.putExtra("hello", "Hello from FirstActivity");
+                            openIntent.putExtra("login", login);
+                            openIntent.putExtra("pass", pass);
+                            startActivity(openIntent);
+                        }
+                        else{
+                            Log.v("Enter", "ERROR");
+                        }
+                    }
+                }).start();
             }
         });
 
         Registration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!db.checkUser(new User(loginText.getText().toString(), passwordText.getText().toString()))) {
-                    db.addUser(new User(loginText.getText().toString(), passwordText.getText().toString()));
-                    openIntent.putExtra("hello", "Hello from FirstActivity");
-                    openIntent.putExtra("login", loginText.getText().toString());
-                    openIntent.putExtra("pass", passwordText.getText().toString());
-                    startActivity(openIntent);
-                }
-                else{
-                    Toast.makeText(getApplicationContext(), "Пользователь уже существует", Toast.LENGTH_SHORT).show();
-                }
+                String login = loginText.getText().toString();
+                String pass = passwordText.getText().toString();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!db.checkUser(new User(login, pass))) {
+                            db.addUser(new User(login, pass));
+                            openIntent.putExtra("hello", "Hello from FirstActivity");
+                            openIntent.putExtra("login", loginText.getText().toString());
+                            openIntent.putExtra("pass", passwordText.getText().toString());
+                            startActivity(openIntent);
+                        }
+                        else{
+                            Log.v("Registration", "ERROR");
+                        }
+                    }
+                }).start();
             }
         });
         ChangePass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(db.refreshPass(new User(loginText.getText().toString(), passwordText.getText().toString()))){
-                    Toast.makeText(getApplicationContext(), "Пароль изменен", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    Toast.makeText(getApplicationContext(), "Вы не зарегистрированы", Toast.LENGTH_SHORT).show();
-                }
+                String login = loginText.getText().toString();
+                String pass = passwordText.getText().toString();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(db.refreshPass(new User(login, pass))){
+                            Log.v("Change pass", "Success");
+                        }
+                        else{
+                            Log.v("Change pass", "ERROR");
+                        }
+                    }
+                }).start();
             }
         });
     }
